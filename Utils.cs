@@ -110,9 +110,9 @@ namespace CSUtils
             return range.Length == 2 ? Replace(str, replacement, range[0], range[1]) : str;
         }
 
-        public static string Substring(this string self, int[] r)
+        public static string Substring(this string self, int[] range)
         {
-            return r.Length == 2 ? self.Substring(r[0], r[1]) : "";
+            return range.Length == 2 ? self.Substring(range[0], range[1]) : "";
         }
 
         #endregion
