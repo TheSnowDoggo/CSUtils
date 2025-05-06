@@ -79,10 +79,40 @@ namespace CSUtils
             return true;
         }
 
+        public static bool Match(string str, string search, int index)
+        {
+            for (int i = 0; i < search.Length && i + index < str.Length; i++)
+            {
+                if (str[i + index] != search[i])
+                    return false;
+            }
+            return true;
+        }
+
         public static string TakeBetween(string str, char value, int startIndex = 0)
         {
             int f = str.IndexOf(value, startIndex) + 1;
             return str[f..str.IndexOf(value, f)];
+        }
+
+        public static string Replace(string str, string replacement, int start, int count)
+        {
+            return string.Join("", str[..start], replacement, str[(start + count)..]);
+        }
+
+        public static string Replace(string str, string replacement, int count)
+        {
+            return replacement + str[count..];
+        }
+
+        public static string Replace(string str, string replacement, int[] range)
+        {
+            return range.Length == 2 ? Replace(str, replacement, range[0], range[1]) : str;
+        }
+
+        public static string Substring(this string self, int[] r)
+        {
+            return r.Length == 2 ? self.Substring(r[0], r[1]) : "";
         }
 
         #endregion
