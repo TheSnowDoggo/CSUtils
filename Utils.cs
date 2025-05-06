@@ -180,7 +180,7 @@ namespace CSUtils
         public static int Mod(int a, int b)
         {
             int mod = a % b;
-            return a >= 0 ? mod : mod + b;
+            return mod >= 0 ? mod : mod + b;
         }
 
         #endregion
