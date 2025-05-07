@@ -12,6 +12,14 @@ namespace CSUtils
             CenterR
         }
 
+        public enum GBOrigin
+        {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight,
+        }
+
         #region String
 
         public static string Copy(char c, int copies)
@@ -108,15 +116,49 @@ namespace CSUtils
             return range.Length == 2 ? Replace(str, replacement, range[0], range[1]) : str;
         }
 
-        public static string Infill(string[] arr, string infill)
+        public static string BuildGrid(char[,] grid, GBOrigin origin = GBOrigin.TopLeft)
+        {
+            int xEnd = grid.GetLength(0) - 1;
+            int yEnd = grid.GetLength(1) - 1;
+            StringBuilder sb = new(xEnd * yEnd + yEnd);
+            for (int y = 0; y <= yEnd; ++y)
+            {
+                for (int x = 0; x <= xEnd; ++x)
+                {
+                    sb.Append(origin switch
+                    {
+                        GBOrigin.TopLeft =>     grid[x       , y       ],
+                        GBOrigin.TopRight =>    grid[xEnd - x, y       ],
+                        GBOrigin.BottomLeft =>  grid[x       , yEnd - y],
+                        GBOrigin.BottomRight => grid[xEnd - x, yEnd - y],
+                        _ => throw new NotImplementedException("Unknown Origin?")
+                    });
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
+        }
+
+        public static string Infill(IEnumerable<string> collection, string infill)
         {
             StringBuilder sb = new();
-            for (int i = 0; i < arr.Length; ++i)
+            bool first = true;
+            foreach (var item in collection)
             {
-                if (i != 0)
+                if (!first)
                     sb.Append(infill);
-                sb.Append(arr[i]);
+                else
+                    first = false;
+                sb.Append(item);
             }
+            return sb.ToString();
+        }
+
+        public static string Build(IEnumerable<string> collection)
+        {
+            StringBuilder sb = new();
+            foreach (var item in collection)
+                sb.Append(item);
             return sb.ToString();
         }
 
@@ -134,6 +176,64 @@ namespace CSUtils
             for (int i = 1; i < arr.Length; ++i)
                 arr[i] = char.ToLower(self[i]);
             return new(arr);
+        }
+
+        #endregion
+
+        #region RunLengthEncoding
+
+        public static string RLCompress(string str, char seperator = '§')
+        {
+            if (str.Length == 0)
+                return str;
+
+            StringBuilder sb = new(str.Length);
+            char last = str[0];
+            int count = 1;
+            for (int i = 1; i <= str.Length; ++i)
+            {
+                char chr = i < str.Length ? str[i] : (char)(str[^1] + 1);
+                if (chr == last)
+                    ++count;
+                else
+                {
+                    if (count > 1)
+                        sb.Append(count);
+                    sb.Append(char.IsDigit(last) ? $"{seperator}{last}{seperator}" : last.ToString());
+
+                    last = chr;
+                    count = 1;
+                }
+            }
+            return sb.ToString();
+        }
+
+        public static string RLDecompress(string str, char seperator = '§')
+        {
+            StringBuilder sb = new(str.Length);
+            StringBuilder dsb = new();
+            bool inDigit = false;
+            for (int i = 0; i < str.Length; ++i)
+            {
+                if (str[i] == seperator)
+                {
+                    inDigit = !inDigit;
+                    continue;
+                }
+
+                if (!inDigit && char.IsDigit(str[i]))
+                    dsb.Append(str[i]);
+                else if (dsb.Length > 0)
+                {
+                    sb.Append(Copy(str[i], Convert.ToInt32(dsb.ToString())));
+                    dsb.Clear();
+                }
+                else
+                {
+                    sb.Append(str[i]);
+                }
+            }
+            return sb.ToString();
         }
 
         #endregion
