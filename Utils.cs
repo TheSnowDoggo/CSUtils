@@ -311,7 +311,7 @@ namespace CSUtils
                 Console.Clear();
         }
 
-        public static bool BoolPrompt(bool display = false, 
+        public static bool IBoolPrompt(bool display = false, 
             ConsoleKey tKey = ConsoleKey.Y, 
             ConsoleKey fKey = ConsoleKey.N)
         {
@@ -323,6 +323,48 @@ namespace CSUtils
                     if (display)
                         Console.WriteLine(cki.KeyChar);
                     return cki.Key == tKey;
+                }
+            }
+        }
+
+        public static bool BoolPrompt(string? msg = null)
+        {
+            if (msg != null)
+                Console.Write(msg);
+            while (true)
+            {
+                var inp = Console.ReadLine() ?? "";
+                switch (inp.ToLower())
+                {
+                    case "y":
+                    case "yes":
+                    case "true":
+                    case "1":
+                        return true;
+                    case "n":
+                    case "no":
+                    case "false":
+                    case "0":
+                        return false;
+                }
+            }
+        }
+
+        public static int Prompt(string msg, string[] options)
+        {
+            StringBuilder sb = new();
+            if (msg != null)
+                sb.AppendLine(msg);
+            for (int i = 0; i < options.Length; ++i)
+                sb.AppendLine($">[{i}] {options[i]}");
+            Console.Write(sb.ToString());
+            while (true)
+            {
+                var inp = Console.ReadLine() ?? "";
+                if (int.TryParse(inp, out var num) 
+                    && num >= 0 && num < options.Length)
+                {
+                    return num;
                 }
             }
         }
