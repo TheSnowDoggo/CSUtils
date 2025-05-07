@@ -162,6 +162,53 @@ namespace CSUtils
             return sb.ToString();
         }
 
+        public static int[] GetIntegerRange(string str, int index)
+        {
+            if (index < 0)
+                return Array.Empty<int>();
+            int start = 0;
+            bool found = false;
+            for (int i = index; i < str.Length; ++i)
+            {
+                bool digit = char.IsDigit(str[i]);
+                if (!digit && found)
+                    return new[] { start, i };
+                if (digit && !found)
+                {
+                    start = i;
+                    found = false;
+                }
+            }
+            return Array.Empty<int>();
+        }
+
+        public static int[] GetDecimalRange(string str, int index)
+        {
+            if (index < 0)
+                return Array.Empty<int>();
+            int start = 0;
+            bool found = false, point = false;
+            for (int i = index; i < str.Length; ++i)
+            {
+                bool digit = false;
+                if (char.IsDigit(str[i]))
+                    digit = true;
+                else if (!point && str[i] == '.')
+                {
+                    digit = true;
+                    point = true;
+                }
+                if (!digit && found)
+                    return new[] { start, i };
+                if (digit && !found)
+                {
+                    start = i;
+                    found = false;
+                }
+            }
+            return Array.Empty<int>();
+        }
+
         public static string Substring(this string self, int[] range)
         {
             return range.Length == 2 ? self.Substring(range[0], range[1]) : "";
