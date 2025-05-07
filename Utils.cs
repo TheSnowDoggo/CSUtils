@@ -4,19 +4,15 @@ namespace CSUtils
 {
     public static class Utils
     {
-        #region String
-
-        public static string Infill(string[] arr, string infill)
+        public enum FMode
         {
-            StringBuilder sb = new();
-            for (int i = 0; i < arr.Length; ++i)
-            {
-                if (i != 0)
-                    sb.Append(infill);
-                sb.Append(arr[i]);
-            }
-            return sb.ToString();
+            Post,
+            Pre,
+            CenterL,
+            CenterR
         }
+
+        #region String
 
         public static string Copy(char c, int copies)
         {
@@ -32,19 +28,19 @@ namespace CSUtils
             return new(arr);
         }
 
-        public static string FTL(string s, int length, char fill = ' ', FitMode mode = FitMode.Post)
+        public static string FTL(string s, int length, char fill = ' ', FMode mode = FMode.Post)
         {
             int dif = length - s.Length;
             if (dif > 0)
             {
                 switch (mode)
                 {
-                    case FitMode.Post: return s + Copy(fill, dif);
-                    case FitMode.Pre: return Copy(fill, dif) + s;
-                    case FitMode.CenterL:
-                    case FitMode.CenterR:
+                    case FMode.Post: return s + Copy(fill, dif);
+                    case FMode.Pre: return Copy(fill, dif) + s;
+                    case FMode.CenterL:
+                    case FMode.CenterR:
                         {
-                            int first = mode == FitMode.CenterL ? dif / 2 : DivUp(dif, 2);
+                            int first = mode == FMode.CenterL ? dif / 2 : DivUp(dif, 2);
                             return string.Join(Copy(fill, first), s, Copy(fill, dif - first));
                         }
                 }
@@ -65,10 +61,8 @@ namespace CSUtils
         public static bool IsPalindrome(string str)
         {
             for (int i = 0; i < str.Length / 2; ++i)
-            {
                 if (str[i] != str[str.Length - i - 1])
                     return false;
-            }
             return true;
         }
 
@@ -80,20 +74,16 @@ namespace CSUtils
                 return false;
             int sqrt = CeilSqrt(num);
             for (int i = 3; i <= sqrt; i += 2)
-            {
                 if (num % i == 0)
                     return false;
-            }
             return true;
         }
 
         public static bool Match(string str, string search, int index)
         {
             for (int i = 0; i < search.Length && i + index < str.Length; i++)
-            {
                 if (str[i + index] != search[i])
                     return false;
-            }
             return true;
         }
 
@@ -118,9 +108,32 @@ namespace CSUtils
             return range.Length == 2 ? Replace(str, replacement, range[0], range[1]) : str;
         }
 
+        public static string Infill(string[] arr, string infill)
+        {
+            StringBuilder sb = new();
+            for (int i = 0; i < arr.Length; ++i)
+            {
+                if (i != 0)
+                    sb.Append(infill);
+                sb.Append(arr[i]);
+            }
+            return sb.ToString();
+        }
+
         public static string Substring(this string self, int[] range)
         {
             return range.Length == 2 ? self.Substring(range[0], range[1]) : "";
+        }
+
+        public static string Capitalize(this string self)
+        {
+            if (self.Length == 0)
+                return self;
+            var arr = new char[self.Length];
+            arr[0] = char.ToUpper(self[0]);
+            for (int i = 1; i < arr.Length; ++i)
+                arr[i] = char.ToLower(self[i]);
+            return new(arr);
         }
 
         #endregion
@@ -160,20 +173,38 @@ namespace CSUtils
 
         public static T? Read<T>()
         {
-            string str = Console.ReadLine() ?? "";
+            var str = Console.ReadLine() ?? "";
             var res = Convert.ChangeType(str, typeof(T));
             return (T?)res;
         }
 
+        public static T?[] Read<T>(int count)
+        {
+            var arr = new T?[count];
+            for (int i = 0; i < count; ++i)
+                arr[i] = Read<T>();
+            return arr;
+        }
+ 
         public static bool TryRead<T>([MaybeNullWhen(false)] out T result)
         {
             result = Read<T>();
             return result != null;
         }
 
+        public static T ReadValid<T>(string? msg = null)
+        {
+            T? res;
+            do
+            {
+                Console.Write(msg);
+            } while (!TryRead<T>(out res));
+            return res;
+        }
+
         public static void ContinueAny(bool clear = false, string msg = "Press any key to continue...")
         {
-            if (msg != string.Empty)
+            if (msg.Length != 0)
                 Console.WriteLine(msg);
             Console.ReadKey(true);
             if (clear)
@@ -234,7 +265,7 @@ namespace CSUtils
 
         public static int Mod(int a, int b)
         {
-            int mod = a % b;
+            var mod = a % b;
             return mod >= 0 ? mod : mod + b;
         }
 
