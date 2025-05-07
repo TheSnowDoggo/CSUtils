@@ -1,26 +1,34 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 namespace CSUtils
 {
     public static class Utils
     {
         #region String
 
+        public static string Infill(string[] arr, string infill)
+        {
+            StringBuilder sb = new();
+            for (int i = 0; i < arr.Length; ++i)
+            {
+                if (i != 0)
+                    sb.Append(infill);
+                sb.Append(arr[i]);
+            }
+            return sb.ToString();
+        }
+
         public static string Copy(char c, int copies)
         {
-            var arr = new char[copies];
-            for (int i = 0; i < copies; ++i)
-                arr[i] = c;
-            return new(arr);
+            return new(CopyArr(c, copies));
         }
 
         public static string Copy(string str, int copies)
         {
             var arr = new char[str.Length * copies];
             for (int i = 0; i < arr.Length; i += str.Length)
-            {
                 for (int j = 0; j < str.Length; ++j)
                     arr[i + j] = str[j];
-            }
             return new(arr);
         }
 
@@ -117,6 +125,37 @@ namespace CSUtils
 
         #endregion
 
+        #region Array
+
+        public static T[] CopyArr<T>(T value, int copies)
+        {
+            var arr = new T[copies];
+            for (int i = 0; i < copies; ++i)
+                arr[i] = value;
+            return arr;
+        }
+
+        public static T[] CopyArr<T>(T[] value, int copies)
+        {
+            var arr = new T[copies * value.Length];
+            for (int i = 0; i < arr.Length; i+=value.Length)
+                for (int j = 0; j < value.Length; ++j)
+                    arr[i + j] = value[j];
+            return arr;
+        }
+
+        public static T[] ResizeFromStart<T>(T[] arr, int trim)
+        {
+            if (trim >= arr.Length)
+                return Array.Empty<T>();
+            var newArr = new T[arr.Length - trim];
+            for (int i = 0; i < newArr.Length; ++i)
+                newArr[i] = arr[i + trim];
+            return newArr; 
+        }
+
+        #endregion
+
         #region Input
 
         public static T? Read<T>()
@@ -139,6 +178,22 @@ namespace CSUtils
             Console.ReadKey(true);
             if (clear)
                 Console.Clear();
+        }
+
+        public static bool BoolPrompt(bool display = false, 
+            ConsoleKey tKey = ConsoleKey.Y, 
+            ConsoleKey fKey = ConsoleKey.N)
+        {
+            while (true)
+            {
+                var cki = Console.ReadKey(true);
+                if (cki.Key == tKey || cki.Key == fKey)
+                {
+                    if (display)
+                        Console.WriteLine(cki.KeyChar);
+                    return cki.Key == tKey;
+                }
+            }
         }
 
         #endregion
