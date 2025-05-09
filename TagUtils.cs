@@ -125,7 +125,7 @@
             for (int i = index; i < end; ++i)
             {
                 if (str[i] == '<' && str[i + tag.Length + 1] == '>' &&
-                    Utils.Match(str, tag, i + 1))
+                    Utils.MatchUntil(str, tag, i + 1))
                 {
                     return i;
                 }
@@ -141,7 +141,7 @@
             for (int i = index; i < end; ++i)
             {
                 if (str[i] == '<' && (str[i + 1] == '/' || str[i + 1] == '\\')
-                    && str[i + tag.Length + 2] == '>' && Utils.Match(str, tag, i + 2))
+                    && str[i + tag.Length + 2] == '>' && Utils.MatchUntil(str, tag, i + 2))
                 {
                     return i;
                 }

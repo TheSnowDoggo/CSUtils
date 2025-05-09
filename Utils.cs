@@ -87,7 +87,17 @@ namespace CSUtils
             return true;
         }
 
-        public static bool Match(string str, string search, int index = 0)
+        public static bool MatchUntil(string str, string search, int index = 0)
+        {
+            if (index < 0)
+                return false;
+            for (int i = 0; i < search.Length && i + index < str.Length; ++i)
+                if (str[i + index] != search[i])
+                    return false;
+            return true;
+        }
+
+        public static bool MatchAll(string str, string search, int index = 0)
         {
             if (index < 0 || index + search.Length > str.Length)
                 return false;
