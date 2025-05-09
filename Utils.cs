@@ -193,7 +193,7 @@ namespace CSUtils
                 if (digit && !found)
                 {
                     start = i;
-                    found = false;
+                    found = true;
                 }
             }
             return Array.Empty<int>();
@@ -225,7 +225,7 @@ namespace CSUtils
                 if (digit && !found)
                 {
                     start = i;
-                    found = false;
+                    found = true;
                 }
             }
             return Array.Empty<int>();
