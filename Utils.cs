@@ -96,7 +96,7 @@ namespace CSUtils
                     return false;
             return true;
         }
-
+        
         public static bool MatchAll(string str, string search, int index = 0)
         {
             if (index < 0 || index + search.Length > str.Length)
@@ -237,16 +237,16 @@ namespace CSUtils
             return new(arr);
         }
 
-        public static string InsertEscapeCharacters(string str)
+        public static string InsertEscapeCharacters(string str, string prematch = @"\")
         {
             StringBuilder sb = new(str.Length);
             for (int i = 0; i < str.Length; ++i)
             {
-                if (str[i] != '\\' || i == str.Length - 1)
+                if (!MatchAll(str, prematch, i))
                     sb.Append(str[i]);
                 else
                 {
-                    switch (str[i + 1])
+                    switch (str[i + prematch.Length])
                     {
                         case 'n': sb.Append('\n');
                             break;
@@ -258,7 +258,7 @@ namespace CSUtils
                             break;
                         case 'b': sb.Append('\b');
                             break;
-                        default: sb.Append('\\');
+                        default: sb.Append(prematch);
                             continue;
                     }
                     ++i;
