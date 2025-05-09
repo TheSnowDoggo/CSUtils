@@ -174,17 +174,22 @@ namespace CSUtils
             return sb.ToString();
         }
 
-        public static int[] GetIntegerRange(string str, int index)
+        public static int[] GetIntegerRange(string str, int index = 0)
         {
             if (index < 0)
                 return Array.Empty<int>();
-            int start = 0;
+            int start = -1;
             bool found = false;
             for (int i = index; i < str.Length; ++i)
             {
                 bool digit = char.IsDigit(str[i]);
-                if (!digit && found)
-                    return new[] { start, i };
+                if (found)
+                {
+                    if (!digit)
+                        return new[] { start, i - start };
+                    if (i == str.Length - 1)
+                        return new[] { start, i + 1 - start };
+                }
                 if (digit && !found)
                 {
                     start = i;
@@ -194,11 +199,11 @@ namespace CSUtils
             return Array.Empty<int>();
         }
 
-        public static int[] GetDecimalRange(string str, int index)
+        public static int[] GetDecimalRange(string str, int index = 0)
         {
             if (index < 0)
                 return Array.Empty<int>();
-            int start = 0;
+            int start = -1;
             bool found = false, point = false;
             for (int i = index; i < str.Length; ++i)
             {
@@ -210,8 +215,13 @@ namespace CSUtils
                     digit = true;
                     point = true;
                 }
-                if (!digit && found)
-                    return new[] { start, i };
+                if (found)
+                {
+                    if (!digit)
+                        return new[] { start, i - start };
+                    if (i == str.Length - 1)
+                        return new[] { start, i + 1 - start };
+                }
                 if (digit && !found)
                 {
                     start = i;
