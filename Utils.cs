@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace CSUtils
 {
     public static class Utils
@@ -87,9 +89,11 @@ namespace CSUtils
             return true;
         }
 
-        public static bool Match(string str, string search, int index)
+        public static bool Match(string str, string search, int index = 0)
         {
-            for (int i = 0; i < search.Length && i + index < str.Length; i++)
+            if (index < 0 || index + search.Length > str.Length)
+                return false;
+            for (int i = 0; i < search.Length; i++)
                 if (str[i + index] != search[i])
                     return false;
             return true;
@@ -225,6 +229,36 @@ namespace CSUtils
             return new(arr);
         }
 
+        public static string InsertEscapeCharacters(string str)
+        {
+            StringBuilder sb = new(str.Length);
+            for (int i = 0; i < str.Length; ++i)
+            {
+                if (str[i] != '\\' || i == str.Length - 1)
+                    sb.Append(str[i]);
+                else
+                {
+                    switch (str[i + 1])
+                    {
+                        case 'n': sb.Append('\n');
+                            break;
+                        case 'r': sb.Append('\r');
+                            break;
+                        case 't': sb.Append('\t');
+                            break;
+                        case 'a': sb.Append('\a');
+                            break;
+                        case 'b': sb.Append('\b');
+                            break;
+                        default: sb.Append('\\');
+                            continue;
+                    }
+                    ++i;
+                }
+            }
+            return sb.ToString();
+        }
+
         #endregion
 
         #region RunLengthEncoding
@@ -304,7 +338,7 @@ namespace CSUtils
             return arr;
         }
 
-        public static T[] ResizeFromStart<T>(T[] arr, int trim)
+        public static T[] TrimFromStart<T>(T[] arr, int trim)
         {
             if (trim >= arr.Length)
                 return Array.Empty<T>();
@@ -312,6 +346,11 @@ namespace CSUtils
             for (int i = 0; i < newArr.Length; ++i)
                 newArr[i] = arr[i + trim];
             return newArr; 
+        }
+
+        public static T[] TrimFirst<T>(T[] arr)
+        {
+            return TrimFromStart(arr, 1);
         }
 
         #endregion
