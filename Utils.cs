@@ -271,7 +271,7 @@ namespace CSUtils
                         default: sb.Append(prematch);
                             continue;
                     }
-                    ++i;
+                    i+=prematch.Length;
                 }
             }
             return sb.ToString();
