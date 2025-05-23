@@ -431,7 +431,7 @@ namespace CSUtils
                 Console.Clear();
         }
 
-        public static bool IBoolPrompt(bool display = false, 
+        public static bool KeyBoolPrompt(bool display = false, 
             ConsoleKey tKey = ConsoleKey.Y, 
             ConsoleKey fKey = ConsoleKey.N)
         {
@@ -484,7 +484,7 @@ namespace CSUtils
                 Console.SetCursorPosition(Left, Top);
                 for (int i = 0; i < options.Length; ++i)
                 {
-                    var str = $"[{i}] {FTL(options[i], longest)}";
+                    var str = FTL(options[i], longest);
                     if (i == sel)
                     {
                         SwapConsoleColor();
