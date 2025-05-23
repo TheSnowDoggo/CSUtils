@@ -166,7 +166,7 @@ namespace CSUtils
             return sb.ToString();
         }
 
-        public static string Infill(IEnumerable<object> collection, string infill)
+        public static string Infill<T>(IEnumerable<T> collection, string infill)
         {
             return Infill(ColToStr(collection), infill);
         }
@@ -179,12 +179,12 @@ namespace CSUtils
             return sb.ToString();
         }
 
-        public static string Build(IEnumerable<object> collection)
+        public static string Build<T>(IEnumerable<T> collection)
         {
             return Build(ColToStr(collection));
         }
 
-        public static IEnumerable<string> ColToStr(IEnumerable<object> collection)
+        public static IEnumerable<string> ColToStr<T>(IEnumerable<T> collection)
         {
             return from obj in collection
                    select obj.ToString();
@@ -470,23 +470,56 @@ namespace CSUtils
             }
         }
 
-        public static int Prompt(string msg, string[] options)
+        public static int GetSelection(string[] options, bool clear = true)
         {
-            StringBuilder sb = new();
-            if (msg != null)
-                sb.AppendLine(msg);
-            for (int i = 0; i < options.Length; ++i)
-                sb.AppendLine($">[{i}] {options[i]}");
-            Console.Write(sb.ToString());
+            Console.CursorVisible = false;
+
+            var (Left, Top) = Console.GetCursorPosition();
+
+            int longest = options.Max(x => x.Length);
+
+            int sel = 0;
             while (true)
             {
-                var inp = Console.ReadLine() ?? "";
-                if (int.TryParse(inp, out var num) 
-                    && num >= 0 && num < options.Length)
+                Console.SetCursorPosition(Left, Top);
+                for (int i = 0; i < options.Length; ++i)
                 {
-                    return num;
+                    var str = $"[{i}] {FTL(options[i], longest)}";
+                    if (i == sel)
+                    {
+                        SwapConsoleColor();
+                        Console.WriteLine(str);
+                        SwapConsoleColor();
+                    }
+                    else
+                    {
+                        Console.WriteLine(str);
+                    }
+                }
+
+                var cki = Console.ReadKey(true);
+
+                switch (cki.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        sel = Mod(sel - 1, options.Length);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        sel = Mod(sel + 1, options.Length);
+                        break;
+                    case ConsoleKey.Enter:
+                        if (clear)
+                            Console.Clear();
+                        Console.CursorVisible = true;
+                        return sel;
                 }
             }
+        }
+
+        public static void SwapConsoleColor()
+        {
+            (Console.ForegroundColor, Console.BackgroundColor)
+                = (Console.BackgroundColor, Console.ForegroundColor);
         }
 
         #endregion
