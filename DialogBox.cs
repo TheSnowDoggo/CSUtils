@@ -68,6 +68,16 @@ namespace CSUtils
         #endregion 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int MessageBox(IntPtr hWnd, string lpText, string lpCaption, uint uType);
+        private static extern int MessageBox(IntPtr hWnd, string lpText, string lpCaption, uint uType);
+
+        public static int Box(IntPtr hWnd, string lpText, string lpCaption, uint uType = 0)
+        {
+            return MessageBox(hWnd, lpText, lpCaption, uType);
+        }
+
+        public static int Box(string lpText, string lpCaption, uint uType = 0)
+        {
+            return MessageBox(IntPtr.Zero, lpText, lpCaption, uType);
+        }
     }
 }
