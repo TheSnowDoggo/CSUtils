@@ -470,7 +470,7 @@ namespace CSUtils
             }
         }
 
-        public static int GetSelection(string[] options, bool clear = true)
+        public static int SelectionPrompt(string[] options, bool clear = true)
         {
             Console.CursorVisible = false;
 
