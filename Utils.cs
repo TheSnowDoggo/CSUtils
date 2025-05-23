@@ -171,6 +171,11 @@ namespace CSUtils
             return Infill(ColToStr(collection), infill);
         }
 
+        public static void PPrint<T>(IEnumerable<T> arr)
+        {
+            Console.WriteLine(Infill(arr, ","));
+        }
+
         public static string Build(IEnumerable<string> collection)
         {
             StringBuilder sb = new();
@@ -422,35 +427,16 @@ namespace CSUtils
             return res;
         }
 
-        public static void ContinueAny(bool clear = false, string msg = "Press any key to continue...")
+        public static void ContinueAny(bool clear = true)
         {
-            if (msg.Length != 0)
-                Console.WriteLine(msg);
+            Console.WriteLine("Press any key to continue...");
             Console.ReadKey(true);
             if (clear)
                 Console.Clear();
         }
 
-        public static bool KeyBoolPrompt(bool display = false, 
-            ConsoleKey tKey = ConsoleKey.Y, 
-            ConsoleKey fKey = ConsoleKey.N)
+        public static bool BoolPrompt()
         {
-            while (true)
-            {
-                var cki = Console.ReadKey(true);
-                if (cki.Key == tKey || cki.Key == fKey)
-                {
-                    if (display)
-                        Console.WriteLine(cki.KeyChar);
-                    return cki.Key == tKey;
-                }
-            }
-        }
-
-        public static bool BoolPrompt(string? msg = null)
-        {
-            if (msg != null)
-                Console.Write(msg);
             while (true)
             {
                 var inp = Console.ReadLine() ?? "";
@@ -470,21 +456,25 @@ namespace CSUtils
             }
         }
 
-        public static int SelectionPrompt(string[] options, bool clear = true)
+        public static bool BoolPrompt(string msg)
+        {
+            Console.WriteLine(msg);
+            return BoolPrompt();
+        }
+
+        public static int SelectionPrompt(int count, Func<int, string> render, bool clear = true)
         {
             Console.CursorVisible = false;
 
             var (Left, Top) = Console.GetCursorPosition();
 
-            int longest = options.Max(x => x.Length);
-
             int sel = 0;
             while (true)
             {
                 Console.SetCursorPosition(Left, Top);
-                for (int i = 0; i < options.Length; ++i)
+                for (int i = 0; i < count; ++i)
                 {
-                    var str = FTL(options[i], longest);
+                    var str = render.Invoke(i);
                     if (i == sel)
                     {
                         SwapConsoleColor();
@@ -502,10 +492,10 @@ namespace CSUtils
                 switch (cki.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        sel = Mod(sel - 1, options.Length);
+                        sel = Mod(sel - 1, count);
                         break;
                     case ConsoleKey.DownArrow:
-                        sel = Mod(sel + 1, options.Length);
+                        sel = Mod(sel + 1, count);
                         break;
                     case ConsoleKey.Enter:
                         if (clear)
@@ -514,6 +504,12 @@ namespace CSUtils
                         return sel;
                 }
             }
+        }
+
+        public static int SelectionPrompt(string[] options, bool clear = true)
+        {
+            int longest = options.Max(x => x.Length);
+            return SelectionPrompt(options.Length, i => FTL(options[i], longest), clear);
         }
 
         public static void SwapConsoleColor()
