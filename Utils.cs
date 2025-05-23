@@ -166,12 +166,28 @@ namespace CSUtils
             return sb.ToString();
         }
 
+        public static string Infill(IEnumerable<object> collection, string infill)
+        {
+            return Infill(ColToStr(collection), infill);
+        }
+
         public static string Build(IEnumerable<string> collection)
         {
             StringBuilder sb = new();
             foreach (var item in collection)
                 sb.Append(item);
             return sb.ToString();
+        }
+
+        public static string Build(IEnumerable<object> collection)
+        {
+            return Build(ColToStr(collection));
+        }
+
+        public static IEnumerable<string> ColToStr(IEnumerable<object> collection)
+        {
+            return from obj in collection
+                   select obj.ToString();
         }
 
         public static int[] GetIntegerRange(string str, int index = 0)
