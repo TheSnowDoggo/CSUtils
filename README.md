@@ -1,0 +1,1 @@
+CSharp string manipulation and other useful functions.

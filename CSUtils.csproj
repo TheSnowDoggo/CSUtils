@@ -5,7 +5,34 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.2.1</Version>
+	<Version>1.2.1</Version>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<PackageId>SCECSUtils</PackageId>
+	<Title>CSUtils</Title>
+	<Authors>Luna Sparkle</Authors>
+	<Company>SCE</Company>
+	<Product>CSUtils</Product>
+	<Description>CSharp string manipulation and other useful functions.</Description>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/TheSnowDoggo/CSUtils</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<NeutralLanguage>en</NeutralLanguage>
+	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<Copyright>MIT License</Copyright>
+	<SignAssembly>True</SignAssembly>
+	<AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
