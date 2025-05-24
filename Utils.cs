@@ -6,18 +6,9 @@ namespace CSUtils
     {
         public enum FMode
         {
-            Post,
-            Pre,
-            CenterL,
-            CenterR
-        }
-
-        public enum GBOrigin
-        {
-            TopLeft,
-            TopRight,
-            BottomLeft,
-            BottomRight,
+            Left,
+            Right,
+            Center,
         }
 
         #region String
@@ -36,26 +27,23 @@ namespace CSUtils
             return new(arr);
         }
 
-        public static string FTL(string s, int length, char fill = ' ', FMode mode = FMode.Post)
+        public static string FTL(string s, int length, char fill = ' ', FMode mode = FMode.Right)
         {
             int dif = length - s.Length;
-            if (dif > 0)
-            {
-                switch (mode)
-                {
-                    case FMode.Post: return s + Copy(fill, dif);
-                    case FMode.Pre: return Copy(fill, dif) + s;
-                    case FMode.CenterL:
-                    case FMode.CenterR:
-                        {
-                            int first = mode == FMode.CenterL ? dif / 2 : DivUp(dif, 2);
-                            return string.Join(Copy(fill, first), s, Copy(fill, dif - first));
-                        }
-                }
-            }
             if (dif < 0)
                 return s[..length];
-            return s;
+            if (dif == 0)
+                return s;
+            bool right = (mode | FMode.Right) == FMode.Right;
+            if ((mode | FMode.Center) == FMode.Center)
+            {
+                int first = !right ? dif / 2 : DivUp(dif, 2);
+                return string.Join(Copy(fill, first), s, Copy(fill, dif - first));
+            }
+            else
+            {
+                return right ? s + Copy(fill, dif) : Copy(fill, dif) + s;
+            }
         }
 
         public static string Reverse(string str)
@@ -128,29 +116,6 @@ namespace CSUtils
             return range.Length == 2 ? Replace(str, replacement, range[0], range[1]) : str;
         }
 
-        public static string BuildGrid(char[,] grid, GBOrigin origin = GBOrigin.TopLeft)
-        {
-            int xEnd = grid.GetLength(0) - 1;
-            int yEnd = grid.GetLength(1) - 1;
-            StringBuilder sb = new(xEnd * yEnd + yEnd);
-            for (int y = 0; y <= yEnd; ++y)
-            {
-                for (int x = 0; x <= xEnd; ++x)
-                {
-                    sb.Append(origin switch
-                    {
-                        GBOrigin.TopLeft =>     grid[x       , y       ],
-                        GBOrigin.TopRight =>    grid[xEnd - x, y       ],
-                        GBOrigin.BottomLeft =>  grid[x       , yEnd - y],
-                        GBOrigin.BottomRight => grid[xEnd - x, yEnd - y],
-                        _ => throw new NotImplementedException("Unknown Origin?")
-                    });
-                }
-                sb.AppendLine();
-            }
-            return sb.ToString();
-        }
-
         public static string Infill(IEnumerable<string> collection, string infill)
         {
             StringBuilder sb = new();
@@ -193,63 +158,6 @@ namespace CSUtils
         {
             return from obj in collection
                    select obj.ToString();
-        }
-
-        public static int[] GetIntegerRange(string str, int index = 0)
-        {
-            if (index < 0)
-                return Array.Empty<int>();
-            int start = -1;
-            bool found = false;
-            for (int i = index; i < str.Length; ++i)
-            {
-                bool digit = char.IsDigit(str[i]);
-                if (found)
-                {
-                    if (!digit)
-                        return new[] { start, i - start };
-                    if (i == str.Length - 1)
-                        return new[] { start, i + 1 - start };
-                }
-                if (digit && !found)
-                {
-                    start = i;
-                    found = true;
-                }
-            }
-            return Array.Empty<int>();
-        }
-
-        public static int[] GetDecimalRange(string str, int index = 0)
-        {
-            if (index < 0)
-                return Array.Empty<int>();
-            int start = -1;
-            bool found = false, point = false;
-            for (int i = index; i < str.Length; ++i)
-            {
-                bool digit = false;
-                if (char.IsDigit(str[i]))
-                    digit = true;
-                else if (!point && str[i] == '.')
-                {
-                    digit = true;
-                    point = true;
-                }
-                if (found)
-                {
-                    if (!digit)
-                        return new[] { start, i - start };
-                    if (i == str.Length - 1)
-                        return new[] { start, i + 1 - start };
-                }
-                if (digit && !found)
-                {
-                    start = i;
-                    found = true;
-                }
-            }
-            return Array.Empty<int>();
         }
 
         public static string Substring(this string self, int[] range)
