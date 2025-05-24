@@ -1,1 +1,1 @@
-CSharp string manipulation and other useful functions.
+CSharp string manipulation and other useful functions for SCE.

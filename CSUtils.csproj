@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -12,7 +12,7 @@
 	<Authors>Luna Sparkle</Authors>
 	<Company>SCE</Company>
 	<Product>CSUtils</Product>
-	<Description>CSharp string manipulation and other useful functions.</Description>
+	<Description>CSharp string manipulation and other useful functions for SCE.</Description>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/TheSnowDoggo/CSUtils</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
