@@ -4,26 +4,26 @@
     {
         #region CharTags
 
-        public static int SIndexOf(string str, char tag, int index = 0)
+        public static int SIndexOf(string s, char tag, int index = 0)
         {
             if (index < 0)
                 return -1;
-            for (int i = index; i < str.Length - 2; ++i)
+            for (int i = index; i < s.Length - 2; ++i)
             {
-                if (str[i] == '<' && str[i + 1] == tag && str[i + 2] == '>')
+                if (s[i] == '<' && s[i + 1] == tag && s[i + 2] == '>')
                     return i;
             }
             return -1;
         }
 
-        public static int EIndexOf(string str, char tag, int index = 0)
+        public static int EIndexOf(string s, char tag, int index = 0)
         {
             if (index < 0)
                 return -1;
-            for (int i = index; i < str.Length - 3; ++i)
+            for (int i = index; i < s.Length - 3; ++i)
             {
-                if (str[i] == '<' && (str[i + 1] == '/' || str[i + 1] == '\\') 
-                    && str[i + 2] == tag && str[i + 3] == '>')
+                if (s[i] == '<' && (s[i + 1] == '/' || s[i + 1] == '\\') 
+                    && s[i + 2] == tag && s[i + 3] == '>')
                 {
                     return i;
                 }
@@ -31,33 +31,33 @@
             return -1;
         }
 
-        public static int FindIndex(string str, char tag, int count, int index = 0)
+        public static int FindIndex(string s, char tag, int count, int index = 0)
         {
-            int start = SIndexOf(str, tag, index);
+            int start = SIndexOf(s, tag, index);
             for (int i = 1; i < count && start != -1; ++i)
-                start = SIndexOf(str, tag, start + 3);
+                start = SIndexOf(s, tag, start + 3);
             return start;
         }
 
-        public static int[] Range(string str, char tag, int index = 0)
+        public static int[] Range(string s, char tag, int index = 0)
         {
-            int start = SIndexOf(str, tag, index);
+            int start = SIndexOf(s, tag, index);
             if (start != -1)
             {
                 start += 3;
-                int end = EIndexOf(str, tag, start);
+                int end = EIndexOf(s, tag, start);
                 if (end != -1)
                     return new[] { start, end - start };
             }
             return Array.Empty<int>();
         }
 
-        public static int[] LongRange(string str, char tag, int index = 0)
+        public static int[] LongRange(string s, char tag, int index = 0)
         {
-            int start = SIndexOf(str, tag, index);
+            int start = SIndexOf(s, tag, index);
             if (start != -1)
             {
-                int end = EIndexOf(str, tag, start + 3);
+                int end = EIndexOf(s, tag, start + 3);
                 if (end != -1)
                     return new[] { start, end + 4 - start };
             }
@@ -71,61 +71,61 @@
             return new[] { range[0] - 3, range[1] + 7 };
         }
 
-        public static string ReadTag(string str, char tag, int index = 0)
+        public static string ReadTag(string s, char tag, int index = 0)
         {
-            var r = Range(str, tag, index);
+            var r = Range(s, tag, index);
             if (r.Length == 0)
                 return "";
-            return str.Substring(r[0], r[1]);
+            return s.Substring(r[0], r[1]);
         }
 
-        public static string WriteTag(string str, char tag, string write, int index = 0)
+        public static string WriteTag(string s, char tag, string write, int index = 0)
         {
-            var r = Range(str, tag, index);
+            var r = Range(s, tag, index);
             if (r.Length == 0)
-                return str;
-            return string.Join(str[..r[0]], write, str[(r[0] + r[1])..]);
+                return s;
+            return string.Join(s[..r[0]], write, s[(r[0] + r[1])..]);
         }
 
-        public static IEnumerable<int[]> EnumerateTagRanges(string str, char tag, int index = 0)
+        public static IEnumerable<int[]> EnumerateTagRanges(string s, char tag, int index = 0)
         {
-            var r = Range(str, tag, index);
+            var r = Range(s, tag, index);
             while (r.Length != 0)
             {
                 yield return r;
-                r = Range(str, tag, r[0]);
+                r = Range(s, tag, r[0]);
             }
         }
 
-        public static int[][] ReadTagsRanges(string str, char tag, int index = 0)
+        public static int[][] ReadTagsRanges(string s, char tag, int index = 0)
         {
-            return EnumerateTagRanges(str, tag, index).ToArray();
+            return EnumerateTagRanges(s, tag, index).ToArray();
         }
 
-        public static IEnumerable<string> EnumerateTags(string str, char tag, int index = 0)
+        public static IEnumerable<string> EnumerateTags(string s, char tag, int index = 0)
         {
-            foreach (var r in EnumerateTagRanges(str, tag, index))
-                yield return str.Substring(r[0], r[1]);
+            foreach (var r in EnumerateTagRanges(s, tag, index))
+                yield return s.Substring(r[0], r[1]);
         }
 
-        public static string[] ReadTags(string str, char tag, int index = 0)
+        public static string[] ReadTags(string s, char tag, int index = 0)
         {
-            return EnumerateTags(str, tag, index).ToArray();
+            return EnumerateTags(s, tag, index).ToArray();
         }
 
         #endregion
 
         #region StringTags
 
-        public static int SIndexOf(string str, string tag, int index = 0)
+        public static int SIndexOf(string s, string tag, int index = 0)
         {
             if (index < 0)
                 return -1;
-            int end = str.Length - tag.Length - 2;
+            int end = s.Length - tag.Length - 2;
             for (int i = index; i < end; ++i)
             {
-                if (str[i] == '<' && str[i + tag.Length + 1] == '>' &&
-                    Utils.MatchUntil(str, tag, i + 1))
+                if (s[i] == '<' && s[i + tag.Length + 1] == '>' &&
+                    Utils.MatchUntil(s, tag, i + 1))
                 {
                     return i;
                 }
@@ -133,15 +133,15 @@
             return -1;
         }
 
-        public static int EIndexOf(string str, string tag, int index = 0)
+        public static int EIndexOf(string s, string tag, int index = 0)
         {
             if (index < 0)
                 return -1;
-            int end = str.Length - tag.Length - 2;
+            int end = s.Length - tag.Length - 2;
             for (int i = index; i < end; ++i)
             {
-                if (str[i] == '<' && (str[i + 1] == '/' || str[i + 1] == '\\')
-                    && str[i + tag.Length + 2] == '>' && Utils.MatchUntil(str, tag, i + 2))
+                if (s[i] == '<' && (s[i + 1] == '/' || s[i + 1] == '\\')
+                    && s[i + tag.Length + 2] == '>' && Utils.MatchUntil(s, tag, i + 2))
                 {
                     return i;
                 }
@@ -149,33 +149,33 @@
             return -1;
         }
 
-        public static int FindIndex(string str, string tag, int count, int index = 0)
+        public static int FindIndex(string s, string tag, int count, int index = 0)
         {
-            int start = SIndexOf(str, tag, index);
+            int start = SIndexOf(s, tag, index);
             for (int i = 1; i < count && start != -1; ++i)
-                start = SIndexOf(str, tag, start + tag.Length + 2);
+                start = SIndexOf(s, tag, start + tag.Length + 2);
             return start;
         }
 
-        public static int[] Range(string str, string tag, int index = 0)
+        public static int[] Range(string s, string tag, int index = 0)
         {
-            int start = SIndexOf(str, tag, index);
+            int start = SIndexOf(s, tag, index);
             if (start != -1)
             {
                 start += tag.Length + 2;
-                int end = EIndexOf(str, tag, start);
+                int end = EIndexOf(s, tag, start);
                 if (end != -1)
                     return new[] { start, end - start };
             }
             return Array.Empty<int>();
         }
 
-        public static int[] LongRange(string str, string tag, int index = 0)
+        public static int[] LongRange(string s, string tag, int index = 0)
         {
-            int start = SIndexOf(str, tag, index);
+            int start = SIndexOf(s, tag, index);
             if (start != -1)
             {
-                int end = EIndexOf(str, tag, start + tag.Length + 2);
+                int end = EIndexOf(s, tag, start + tag.Length + 2);
                 if (end != -1)
                     return new[] { start, end + tag.Length + 3 - start };
             }
@@ -189,46 +189,46 @@
             return new[] { range[0] - tagLength - 2, range[1] + tagLength * 2 + 5 };
         }
 
-        public static string ReadTag(string str, string tag, int index = 0)
+        public static string ReadTag(string s, string tag, int index = 0)
         {
-            var r = Range(str, tag, index);
+            var r = Range(s, tag, index);
             if (r.Length == 0)
                 return "";
-            return str.Substring(r[0], r[1]);
+            return s.Substring(r[0], r[1]);
         }
 
-        public static string WriteTag(string str, string tag, string write, int index = 0)
+        public static string WriteTag(string s, string tag, string write, int index = 0)
         {
-            var r = Range(str, tag, index);
+            var r = Range(s, tag, index);
             if (r.Length == 0)
-                return str;
-            return string.Join("", str[..r[0]], write, str[(r[0] + r[1])..]);
+                return s;
+            return string.Join("", s[..r[0]], write, s[(r[0] + r[1])..]);
         }
 
-        public static IEnumerable<int[]> EnumerateTagRanges(string str, string tag, int index = 0)
+        public static IEnumerable<int[]> EnumerateTagRanges(string s, string tag, int index = 0)
         {
-            var r = Range(str, tag, index);
+            var r = Range(s, tag, index);
             while (r.Length != 0)
             {
                 yield return r;
-                r = Range(str, tag, r[0]);
+                r = Range(s, tag, r[0]);
             }
         }
 
-        public static int[][] ReadTagsRanges(string str, string tag, int index = 0)
+        public static int[][] ReadTagsRanges(string s, string tag, int index = 0)
         {
-            return EnumerateTagRanges(str, tag, index).ToArray();
+            return EnumerateTagRanges(s, tag, index).ToArray();
         }
 
-        public static IEnumerable<string> EnumerateTags(string str, string tag, int index = 0)
+        public static IEnumerable<string> EnumerateTags(string s, string tag, int index = 0)
         {
-            foreach (var r in EnumerateTagRanges(str, tag, index))
-                yield return str.Substring(r[0], r[1]);
+            foreach (var r in EnumerateTagRanges(s, tag, index))
+                yield return s.Substring(r[0], r[1]);
         }
 
-        public static string[] ReadTags(string str, string tag, int index = 0)
+        public static string[] ReadTags(string s, string tag, int index = 0)
         {
-            return EnumerateTags(str, tag, index).ToArray();
+            return EnumerateTags(s, tag, index).ToArray();
         }
 
         #endregion

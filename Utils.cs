@@ -18,12 +18,12 @@ namespace CSUtils
             return new(CopyArr(c, copies));
         }
 
-        public static string Copy(string str, int copies)
+        public static string Copy(string s, int copies)
         {
-            var arr = new char[str.Length * copies];
-            for (int i = 0; i < arr.Length; i += str.Length)
-                for (int j = 0; j < str.Length; ++j)
-                    arr[i + j] = str[j];
+            var arr = new char[s.Length * copies];
+            for (int i = 0; i < arr.Length; i += s.Length)
+                for (int j = 0; j < s.Length; ++j)
+                    arr[i + j] = s[j];
             return new(arr);
         }
 
@@ -46,18 +46,23 @@ namespace CSUtils
             }
         }
 
-        public static string Reverse(string str)
+        public static string Shorten(string s, int length)
         {
-            var arr = new char[str.Length];
-            for (int i = 0; i < str.Length; ++i)
-                arr[i] = str[str.Length - i - 1];
+            return s.Length <= length ? s : s[..length];
+        }
+
+        public static string Reverse(string s)
+        {
+            var arr = new char[s.Length];
+            for (int i = 0; i < s.Length; ++i)
+                arr[i] = s[s.Length - i - 1];
             return new(arr);
         }
 
-        public static bool IsPalindrome(string str)
+        public static bool IsPalindrome(string s)
         {
-            for (int i = 0; i < str.Length / 2; ++i)
-                if (str[i] != str[str.Length - i - 1])
+            for (int i = 0; i < s.Length / 2; ++i)
+                if (s[i] != s[s.Length - i - 1])
                     return false;
             return true;
         }
@@ -75,45 +80,45 @@ namespace CSUtils
             return true;
         }
 
-        public static bool MatchUntil(string str, string search, int index = 0)
+        public static bool MatchUntil(string s, string search, int index = 0)
         {
             if (index < 0)
                 return false;
-            for (int i = 0; i < search.Length && i + index < str.Length; ++i)
-                if (str[i + index] != search[i])
+            for (int i = 0; i < search.Length && i + index < s.Length; ++i)
+                if (s[i + index] != search[i])
                     return false;
             return true;
         }
         
-        public static bool MatchAll(string str, string search, int index = 0)
+        public static bool MatchAll(string s, string search, int index = 0)
         {
-            if (index < 0 || index + search.Length > str.Length)
+            if (index < 0 || index + search.Length > s.Length)
                 return false;
             for (int i = 0; i < search.Length; i++)
-                if (str[i + index] != search[i])
+                if (s[i + index] != search[i])
                     return false;
             return true;
         }
 
-        public static string TakeBetween(string str, char value, int startIndex = 0)
+        public static string TakeBetween(string s, char value, int startIndex = 0)
         {
-            int f = str.IndexOf(value, startIndex) + 1;
-            return str[f..str.IndexOf(value, f)];
+            int f = s.IndexOf(value, startIndex) + 1;
+            return s[f..s.IndexOf(value, f)];
         }
 
-        public static string Replace(string str, string replacement, int start, int count)
+        public static string Replace(string s, string replacement, int start, int count)
         {
-            return string.Join("", str[..start], replacement, str[(start + count)..]);
+            return string.Join("", s[..start], replacement, s[(start + count)..]);
         }
 
-        public static string Replace(string str, string replacement, int count)
+        public static string Replace(string s, string replacement, int count)
         {
-            return replacement + str[count..];
+            return replacement + s[count..];
         }
 
-        public static string Replace(string str, string replacement, int[] range)
+        public static string Replace(string s, string replacement, int[] range)
         {
-            return range.Length == 2 ? Replace(str, replacement, range[0], range[1]) : str;
+            return range.Length == 2 ? Replace(s, replacement, range[0], range[1]) : s;
         }
 
         public static string Infill(IEnumerable<string> collection, string infill)
@@ -176,16 +181,16 @@ namespace CSUtils
             return new(arr);
         }
 
-        public static string InsertEscapeCharacters(string str, string prematch = @"\")
+        public static string InsertEscapeCharacters(string s, string prematch = @"\")
         {
-            StringBuilder sb = new(str.Length);
-            for (int i = 0; i < str.Length; ++i)
+            StringBuilder sb = new(s.Length);
+            for (int i = 0; i < s.Length; ++i)
             {
-                if (!MatchAll(str, prematch, i))
-                    sb.Append(str[i]);
+                if (!MatchAll(s, prematch, i))
+                    sb.Append(s[i]);
                 else
                 {
-                    switch (str[i + prematch.Length])
+                    switch (s[i + prematch.Length])
                     {
                         case 'n': sb.Append('\n');
                             break;
@@ -210,17 +215,17 @@ namespace CSUtils
 
         #region RunLengthEncoding
 
-        public static string RLCompress(string str, char seperator = '§')
+        public static string RLCompress(string s, char seperator = '§')
         {
-            if (str.Length == 0)
-                return str;
+            if (s.Length == 0)
+                return s;
 
-            StringBuilder sb = new(str.Length);
-            char last = str[0];
+            StringBuilder sb = new(s.Length);
+            char last = s[0];
             int count = 1;
-            for (int i = 1; i <= str.Length; ++i)
+            for (int i = 1; i <= s.Length; ++i)
             {
-                char chr = i < str.Length ? str[i] : (char)(str[^1] + 1);
+                char chr = i < s.Length ? s[i] : (char)(s[^1] + 1);
                 if (chr == last)
                     ++count;
                 else
@@ -236,29 +241,29 @@ namespace CSUtils
             return sb.ToString();
         }
 
-        public static string RLDecompress(string str, char seperator = '§')
+        public static string RLDecompress(string s, char seperator = '§')
         {
-            StringBuilder sb = new(str.Length);
+            StringBuilder sb = new(s.Length);
             StringBuilder dsb = new();
             bool inDigit = false;
-            for (int i = 0; i < str.Length; ++i)
+            for (int i = 0; i < s.Length; ++i)
             {
-                if (str[i] == seperator)
+                if (s[i] == seperator)
                 {
                     inDigit = !inDigit;
                     continue;
                 }
 
-                if (!inDigit && char.IsDigit(str[i]))
-                    dsb.Append(str[i]);
+                if (!inDigit && char.IsDigit(s[i]))
+                    dsb.Append(s[i]);
                 else if (dsb.Length > 0)
                 {
-                    sb.Append(Copy(str[i], Convert.ToInt32(dsb.ToString())));
+                    sb.Append(Copy(s[i], Convert.ToInt32(dsb.ToString())));
                     dsb.Clear();
                 }
                 else
                 {
-                    sb.Append(str[i]);
+                    sb.Append(s[i]);
                 }
             }
             return sb.ToString();
@@ -306,8 +311,8 @@ namespace CSUtils
 
         public static T? Read<T>()
         {
-            var str = Console.ReadLine() ?? "";
-            var res = Convert.ChangeType(str, typeof(T));
+            var s = Console.ReadLine() ?? "";
+            var res = Convert.ChangeType(s, typeof(T));
             return (T?)res;
         }
 
@@ -382,16 +387,16 @@ namespace CSUtils
                 Console.SetCursorPosition(Left, Top);
                 for (int i = 0; i < count; ++i)
                 {
-                    var str = render.Invoke(i);
+                    var s = render.Invoke(i);
                     if (i == sel)
                     {
                         SwapConsoleColor();
-                        Console.WriteLine(str);
+                        Console.WriteLine(s);
                         SwapConsoleColor();
                     }
                     else
                     {
-                        Console.WriteLine(str);
+                        Console.WriteLine(s);
                     }
                 }
 
