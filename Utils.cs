@@ -159,6 +159,53 @@ namespace CSUtils
             return Build(ColToStr(collection));
         }
 
+        public static (int, int) ReadDimensions<T>(T[,] data, bool rowMajor = true)
+        {
+            var d = (data.GetLength(0), data.GetLength(1));
+            if (!rowMajor)
+                (d.Item1, d.Item2) = (d.Item2, d.Item1);
+            return d;
+        }
+
+        public static string BuildGridFlat<T>(T[,] data, bool rowMajor = true)
+        {
+            (int rows, int columns) = ReadDimensions(data, rowMajor);
+            StringBuilder sb = new("[ { ");
+            for (int row = 0; row < rows; ++row)
+            {
+                if (row != 0)
+                    sb.Append(" }, { ");
+                for (int col = 0; col < columns; ++col)
+                {
+                    if (col != 0)
+                        sb.Append(", ");
+                    sb.Append(rowMajor ? data[row, col] : data[col, row]);
+                }
+            }
+            sb.Append(" } ]");
+            return sb.ToString();
+        }
+
+        public static string BuildGrid2D<T>(T[,] data, bool rowMajor = true)
+        {
+            (int rows, int columns) = ReadDimensions(data, rowMajor);
+            StringBuilder sb = new();
+            for (int row = 0; row < rows; ++row)
+            {
+                if (row != 0)
+                    sb.AppendLine();
+                sb.Append("{ ");
+                for (int col = 0; col < columns; ++col)
+                {
+                    if (col != 0)
+                        sb.Append(", ");
+                    sb.Append(rowMajor ? data[row, col] : data[col, row]);
+                }
+                sb.Append(" }");
+            }
+            return sb.ToString();
+        }
+
         public static IEnumerable<string> ColToStr<T>(IEnumerable<T> collection)
         {
             return from obj in collection
