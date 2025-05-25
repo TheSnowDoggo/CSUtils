@@ -6,9 +6,9 @@ namespace CSUtils
     {
         public enum FMode
         {
-            Left,
-            Right,
-            Center,
+            Left = 1,
+            Right = 2,
+            Center = 4,
         }
 
         #region String
