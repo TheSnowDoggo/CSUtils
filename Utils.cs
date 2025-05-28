@@ -516,8 +516,23 @@ namespace CSUtils
 
         public static int Mod(int a, int b)
         {
-            var mod = a % b;
-            return mod >= 0 ? mod : mod + b;
+            var m = a % b;
+            return m >= 0 ? m : m + b;
+        }
+
+        public static int ClosestHigherMultiple(int a, int b)
+        {
+            var m = a % b;
+            return m == 0 ? a : b - m + a;
+        }
+
+        #endregion
+
+        #region Misc
+
+        public static void Swap<T>(ref T a, ref T b)
+        {
+            (a, b) = (b, a);
         }
 
         #endregion
