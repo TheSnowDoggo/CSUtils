@@ -6,9 +6,10 @@ namespace CSUtils
     {
         public enum FMode
         {
-            Left = 1,
-            Right = 2,
-            Center = 4,
+            Left,
+            Right,
+            CenterLB,
+            CenterRB,
         }
 
         #region String
@@ -22,28 +23,32 @@ namespace CSUtils
         {
             var arr = new char[s.Length * copies];
             for (int i = 0; i < arr.Length; i += s.Length)
+            {
                 for (int j = 0; j < s.Length; ++j)
                     arr[i + j] = s[j];
+            }
             return new(arr);
         }
 
         public static string FTL(string s, int length, char fill = ' ', FMode mode = FMode.Right)
         {
-            int dif = length - s.Length;
+            int dif = length - s.Length;          
+            switch (mode)
+            {
+                case FMode.Left:
+                    return Copy(fill, dif) + s;
+                case FMode.Right:
+                    return s + Copy(fill, dif);
+                case FMode.CenterLB:
+                case FMode.CenterRB:
+                    {
+                        int first = mode == FMode.CenterLB ? dif / 2 : DivUp(dif, 2);
+                        return string.Join("", Copy(fill, first), s, Copy(fill, dif - first));
+                    }
+            }
             if (dif < 0)
                 return s[..length];
-            if (dif == 0)
-                return s;
-            bool right = (mode | FMode.Right) == FMode.Right;
-            if ((mode | FMode.Center) == FMode.Center)
-            {
-                int first = !right ? dif / 2 : DivUp(dif, 2);
-                return string.Join(Copy(fill, first), s, Copy(fill, dif - first));
-            }
-            else
-            {
-                return right ? s + Copy(fill, dif) : Copy(fill, dif) + s;
-            }
+            return s;
         }
 
         public static string Shorten(string s, int length)
