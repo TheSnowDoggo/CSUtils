@@ -352,6 +352,26 @@ namespace CSUtils
             return TrimFromStart(arr, 1);
         }
 
+        /// <summary>
+        /// Checks whether the two arrays are equal value by value.
+        /// </summary>
+        public static bool ArraysMatch<T>(T[] a1, T[] a2)
+            where T : IEquatable<T>
+        {
+            if (a1.Length != a2.Length)
+            {
+                return false;
+            }
+            for (int i = 0; i < a1.Length; ++i)
+            {
+                if (!a1[i].Equals(a2[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         #endregion
 
         #region Input
@@ -524,6 +544,26 @@ namespace CSUtils
         {
             var m = a % b;
             return m == 0 ? a : b - m + a;
+        }
+
+        public static float Lerp(float min, float max, float t)
+        {
+            return min + (max - min) * t;
+        }
+
+        public static float Lerp(int min, int max, float t)
+        {
+            return Lerp((float)min, max, t);
+        }
+
+        public static float Delerp(float value, float min, float max)
+        {
+            return (value - min) / (max - min);
+        }
+
+        public static float Delerp(int value, int min, int max)
+        {
+            return Delerp((float)value, min, max);
         }
 
         #endregion
