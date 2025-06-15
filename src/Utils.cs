@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Text;
+
 namespace CSUtils
 {
     public enum FillType
@@ -10,6 +10,9 @@ namespace CSUtils
         CenterRB,
     }
 
+    /// <summary>
+    /// Contains useful utility functions and extensions.
+    /// </summary>
     public static class Utils
     {
         #region String
@@ -712,22 +715,42 @@ namespace CSUtils
 
         #region Lerp
 
+        /// <summary>
+        /// Linear interpolation.
+        /// </summary>
         public static float Lerp(float t, float min, float max)
         {
             return min + (max - min) * t;
         }
 
+        /// <inheritdoc cref="Lerp(float, float, float)"/>
         public static double Lerp(double t, double min, double max)
         {
             return min + (max - min) * t;
         }
 
+        /// <inheritdoc cref="Lerp(float, float, float)"/>
+        public static decimal Lerp(decimal t, decimal min, decimal max)
+        {
+            return min + (max - min) * t;
+        }
+
+        /// <summary>
+        /// Inverse linear interpolation.
+        /// </summary>
         public static float Delerp(float value, float min, float max)
         {
             return (value - min) / (max - min);
         }
 
+        /// <inheritdoc cref="Delerp(float, float, float)"/>
         public static double Delerp(double value, double min, double max)
+        {
+            return (value - min) / (max - min);
+        }
+
+        /// <inheritdoc cref="Delerp(float, float, float)"/>
+        public static decimal Delerp(decimal value, decimal min, decimal max)
         {
             return (value - min) / (max - min);
         }
@@ -736,16 +759,48 @@ namespace CSUtils
 
         #region Angles
 
-        public const float RAD_DEG_FACTOR = 180 / MathF.PI;
+        public const float F_RAD_DEG_FACTOR = 180 / MathF.PI;
 
+        public const double D_RAD_DEG_FACTOR = 180 / Math.PI;
+
+        /// <summary>
+        /// Converts from radians to degrees.
+        /// </summary>
+        /// <param name="radians">The angle in radians.</param>
+        /// <returns>The resulting angle in degrees.</returns>
         public static float RadToDeg(float radians)
         {
-            return radians * RAD_DEG_FACTOR;
+            return radians * F_RAD_DEG_FACTOR;
         }
 
+        /// <summary>
+        /// Converts from radians to degrees.
+        /// </summary>
+        /// <param name="radians">The angle in radians.</param>
+        /// <returns>The resulting angle in degrees.</returns>
+        public static double RadToDeg(double radians)
+        {
+            return radians * D_RAD_DEG_FACTOR;
+        }
+
+        /// <summary>
+        /// Converts from degrees to radians.
+        /// </summary>
+        /// <param name="radians">The angle in degrees.</param>
+        /// <returns>The resulting angle in radians.</returns>
         public static float DegToRad(float degrees)
         {
-            return degrees / RAD_DEG_FACTOR;
+            return degrees / F_RAD_DEG_FACTOR;
+        }
+
+        /// <summary>
+        /// Converts from degrees to radians.
+        /// </summary>
+        /// <param name="radians">The angle in degrees.</param>
+        /// <returns>The resulting angle in radians.</returns>
+        public static double DegToRad(double degrees)
+        {
+            return degrees / D_RAD_DEG_FACTOR;
         }
 
         #endregion
@@ -786,13 +841,13 @@ namespace CSUtils
                 {
                     return a;
                 }
-                return b.CompareTo(c) < 0 ? c : b;
+                return Max(b, c);
             }
             if (b.CompareTo(c) < 0)
             {
                 return b;
             }
-            return a.CompareTo(c) < 0 ? c : a;
+            return Max(a, c);
         }
 
         /// <summary>
