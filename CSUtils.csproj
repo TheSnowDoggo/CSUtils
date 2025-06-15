@@ -27,7 +27,9 @@
 - added QuantitySet&lt;T&gt; container class.
 - changed Lerp and Delerp functions
 - added radian degree conversion functions
+- generated documentation file
 </PackageReleaseNotes>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
