@@ -22,7 +22,8 @@
 	<Copyright>MIT License</Copyright>
 	<SignAssembly>True</SignAssembly>
 	<AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-	<PackageReleaseNotes>- added keymap (from sce)</PackageReleaseNotes>
+	<PackageReleaseNotes>- fixed FTL
+	- added initial selection option for selection prompt</PackageReleaseNotes>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
