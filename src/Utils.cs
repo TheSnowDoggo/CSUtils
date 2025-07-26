@@ -355,16 +355,19 @@ namespace CSUtils
         {
             int dif = length - self.Length;
 
-            switch (mode)
+            if (dif > 0)
             {
-                case FillType.Left:
-                    return Copy(fill, dif) + self;
-                case FillType.Right:
-                    return self + Copy(fill, dif);
-                case FillType.CenterLB:
-                case FillType.CenterRB:
-                    int first = mode == FillType.CenterRB ? dif / 2 : DivUp(dif, 2);
-                    return string.Join("", Copy(fill, first), self, Copy(fill, dif - first));
+                switch (mode)
+                {
+                    case FillType.Left:
+                        return Copy(fill, dif) + self;
+                    case FillType.Right:
+                        return self + Copy(fill, dif);
+                    case FillType.CenterLB:
+                    case FillType.CenterRB:
+                        int first = mode == FillType.CenterRB ? dif / 2 : DivUp(dif, 2);
+                        return string.Join("", Copy(fill, first), self, Copy(fill, dif - first));
+                }
             }
 
             if (dif < 0)
@@ -567,13 +570,13 @@ namespace CSUtils
             return BoolPrompt();
         }
 
-        public static int SelectionPrompt(int count, Func<int, string> render, bool clear = true)
+        public static int SelectionPrompt(int count, Func<int, string> render, int initial = 0)
         {
             Console.CursorVisible = false;
 
             var (Left, Top) = Console.GetCursorPosition();
 
-            int sel = 0;
+            int sel = Clamp(initial, 0, count - 1);
             while (true)
             {
                 Console.SetCursorPosition(Left, Top);
@@ -603,20 +606,16 @@ namespace CSUtils
                         sel = Mod(sel + 1, count);
                         break;
                     case ConsoleKey.Enter:
-                        if (clear)
-                        {
-                            Console.Clear();
-                        }
                         Console.CursorVisible = true;
                         return sel;
                 }
             }
         }
 
-        public static int SelectionPrompt(string[] options, bool clear = true)
+        public static int SelectionPrompt(string[] options, int initial = 0)
         {
             int longest = options.Max(x => x.Length);
-            return SelectionPrompt(options.Length, i => FTL(options[i], longest), clear);
+            return SelectionPrompt(options.Length, i => FTL(options[i], longest), initial);
         }
 
         public static void SwapConsoleColor()
