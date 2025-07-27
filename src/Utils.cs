@@ -494,7 +494,19 @@ namespace CSUtils
             Console.WriteLine(string.Join(',', arr));
         }
 
+        #endregion
 
+        #region Extensions
+
+        public static void Swap<T>(this T[] self, int index1, int index2)
+        {
+            (self[index1], self[index2]) = (self[index2], self[index1]);
+        }
+
+        public static void Swap<T>(this List<T> self, int index1, int index2)
+        {
+            (self[index1], self[index2]) = (self[index2], self[index1]);
+        }
 
         #endregion
 
@@ -616,6 +628,41 @@ namespace CSUtils
         {
             int longest = options.Max(x => x.Length);
             return SelectionPrompt(options.Length, i => FTL(options[i], longest), initial);
+        }
+
+        public static string TagSelectionPrompt(string[] tags, Func<int, string> render, out int index, int initial = 0)
+        {
+            index = SelectionPrompt(tags.Length, render, initial);
+            return tags[index];
+        }
+
+        public static string TagSelectionPrompt(string[] tags, Func<int, string> render, int initial = 0)
+        {
+            return TagSelectionPrompt(tags, render, out _, initial);
+        }
+
+        public static string TagSelectionPrompt((string Tag, string Option)[] tagOptions, out int index, int initial = 0)
+        {
+            int max = tagOptions.Max(p => p.Option.Length);
+            index = SelectionPrompt(tagOptions.Length, i => tagOptions[i].Option.FTL(max), initial);
+            return tagOptions[index].Tag;
+        }
+
+        public static string TagSelectionPrompt((string Tag, string Option)[] tagOptions, int initial = 0)
+        {
+            return TagSelectionPrompt(tagOptions, out _, initial);
+        }
+
+        public static string TagSelectionPrompt(string[] tagOptions, out int index, int initial = 0)
+        {
+            int max = tagOptions.Max(p => p.Length);
+            index = SelectionPrompt(tagOptions.Length, i => tagOptions[i].FTL(max), initial);
+            return tagOptions[index];
+        }
+
+        public static string TagSelectionPrompt(string[] tagOptions, int initial = 0)
+        {
+            return TagSelectionPrompt(tagOptions, out _, initial);
         }
 
         public static void SwapConsoleColor()
